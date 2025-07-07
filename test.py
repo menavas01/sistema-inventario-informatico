@@ -8,7 +8,11 @@ def obtener_tipos_equipo():
     conn = sqlite3.connect('ddbb/equipos.db')  # Asegúrate de que 'equipos.db' sea el nombre correcto
     cursor = conn.cursor()
     cursor.execute("SELECT tipo FROM tipo_de_equipo")
-    tipos = [row[0] for row in cursor.fetchall()]
+
+    tipos = []
+    for row in cursor.fetchall():
+        tipos.append(row[0])
+    
     conn.close()
     return tipos
 

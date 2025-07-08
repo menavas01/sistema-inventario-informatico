@@ -1,4 +1,4 @@
-from tkinter import ttk
+from tkinter import ttk, StringVar, OptionMenu
 
 class CargarEquipo:
     def __init__(self, ventana):
@@ -8,13 +8,22 @@ class CargarEquipo:
         self.marca = ttk.Entry(self.ventana)
         self.modelo = ttk.Entry(self.ventana)
         self.serie = ttk.Entry(self.ventana)
-        self.tipoEquipo = ttk.Entry(self.ventana)
 
-        self.cargar = ttk.Button(self.root, text="Cargar", command=self.cargar_accion)
+        valor_inicial = StringVar(value="Selecciona una opcion")
+        opciones = ["Opcion 1", "Opcion 2"]
+        self.tipoEquipo = ttk.OptionMenu(self.ventana, valor_inicial, *opciones)
 
-    def cargar_equipo():
+        self.cargar = ttk.Button(self.ventana, text="Cargar", command=self.cargar_equipos)
+
+    def cargar_equipos():
         #Hacer inputs como una lista para cargarlo
         equipo = []
 
     def mostrar(self):
         self.label.pack()
+        self.marca.pack()
+        self.modelo.pack()
+        self.serie.pack()
+        self.tipoEquipo.pack()
+        self.cargar.pack()
+        

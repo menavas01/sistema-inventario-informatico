@@ -1,15 +1,9 @@
 import tkinter as tk
-from vista.vista import CargarEquipo
+from vista.inicio import App
 
 def  main():  
     ventana = tk.Tk()
-    ventana.title('Listado Peliculas')  
-    ventana.iconbitmap('assets/icon.ico')
-    ventana.geometry("680x430")
-
-    app = CargarEquipo(ventana)
-    app.mostrar()
-
+    App(ventana)
     ventana.mainloop()
 
 if __name__ == '__main__':

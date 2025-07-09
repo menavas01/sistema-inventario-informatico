@@ -1,6 +1,5 @@
 import sqlite3
-from ddbb.conectar_ddbb import Conexion
-    
+
 def obtener_tipos_equipo():
     conn = sqlite3.connect('ddbb/equipos.db')
     cursor = conn.cursor()
@@ -10,3 +9,13 @@ def obtener_tipos_equipo():
         tipos.append(row[0])
     conn.close()
     return tipos
+
+def obtener_equipo():
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT marca || ' ' || modelo || ' | ' || serie AS equipo_completo FROM equipo")
+    equipos = []
+    for row in cursor.fetchall():
+        equipos.append(row[0])
+    conn.close()
+    return equipos

@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from ddbb.consultas_ddbb import obtener_tipos_equipo, cargar_equipo_ddbb
+from ddbb.consultas_ddbb import obtener_tipos_equipo, cargar_equipo_ddbb, obtener_todos_los_equipos
 
 class CargarEquipo:
     def __init__(self, ventana):
@@ -51,6 +51,27 @@ class CargarEquipo:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
+    def mostrar_lista_equipos(self):
+        # Crear frame con scroll
+        contenedor = ttk.Frame(self.frame)
+        contenedor.pack(padx=10, pady=10, fill='both', expand=True)
+        canvas = tk.Canvas(contenedor, height=150)
+        scrollbar = ttk.Scrollbar(contenedor, orient='vertical', command=canvas.yview)
+        frame_lista = ttk.Frame(canvas)
+        frame_lista.bind(
+            '<Configure>',
+            lambda e: canvas.configure(scrollregion=canvas.bbox('all'))
+        )
+        canvas.create_window((0, 0), window=frame_lista, anchor='nw')
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+        # Obtener y mostrar equipos
+        equipos = obtener_todos_los_equipos()
+        for eq in equipos:
+            info = f"{eq[1]} | Marca: {eq[2]} | Modelo: {eq[3]} | Serie: {eq[4]}"
+            ttk.Label(frame_lista, text=info, anchor='w').pack(fill='x', padx=5, pady=2)
+
     def mostrar_carga(self):
         self.frame.pack()
         self.label.pack(padx= 10, pady= 10)
@@ -63,6 +84,7 @@ class CargarEquipo:
         self.tipoEquipo_label.pack(anchor="w")
         self.tipoEquipo.pack(padx= 10, pady= 10)
         self.cargar.pack(padx= 10, pady= 10)
+        self.mostrar_lista_equipos()
         
     def ocultar(self):
         self.frame.pack_forget()

@@ -69,7 +69,19 @@ def cargar_baja_ddbb(datos):
     
     conn.commit()
     conn.close()
-    
-    
 
-    
+def obtener_todos_los_equipos():
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT equipo.id_equipo, tipo_de_equipo.tipo, equipo.marca, equipo.modelo, equipo.serie
+        FROM equipo
+        JOIN tipo_de_equipo ON equipo.tipo_id = tipo_de_equipo.id_tipo
+    ''')
+    equipos = cursor.fetchall()
+    conn.close()
+    return equipos
+
+
+
+

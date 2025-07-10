@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from ddbb.consultas_ddbb import obtener_equipo, cargar_asignacion_ddbb
+from ddbb.consultas_ddbb import obtener_equipo, cargar_asignacion_ddbb, obtener_todos_los_equipos
 from tkcalendar import DateEntry
 from datetime import datetime
 
@@ -50,6 +50,39 @@ class AsignacionEquipo:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
+    def eliminar_equipo(self, id_equipo):
+        import sqlite3
+        conn = sqlite3.connect('ddbb/equipos.db')
+        cursor = conn.cursor()
+        cursor.execute('DELETE FROM equipo WHERE id_equipo = ?', (id_equipo,))
+        conn.commit()
+        conn.close()
+        messagebox.showinfo('Revertido', 'Equipo eliminado correctamente')
+        self.frame.pack_forget()
+        self.mostrar_asignacion()
+
+    def mostrar_lista_equipos(self):
+        contenedor = ttk.Frame(self.frame)
+        contenedor.pack(padx=10, pady=10, fill='both', expand=True)
+        canvas = tk.Canvas(contenedor, height=150)
+        scrollbar = ttk.Scrollbar(contenedor, orient='vertical', command=canvas.yview)
+        frame_lista = ttk.Frame(canvas)
+        frame_lista.bind(
+            '<Configure>',
+            lambda e: canvas.configure(scrollregion=canvas.bbox('all'))
+        )
+        canvas.create_window((0, 0), window=frame_lista, anchor='nw')
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.pack(side='left', fill='both', expand=True)
+        scrollbar.pack(side='right', fill='y')
+        equipos = obtener_todos_los_equipos()
+        for eq in equipos:
+            info = f"{eq[1]} | Marca: {eq[2]} | Modelo: {eq[3]} | Serie: {eq[4]}"
+            fila = ttk.Frame(frame_lista)
+            fila.pack(fill='x', padx=5, pady=2)
+            ttk.Label(fila, text=info, anchor='w').pack(side='left', fill='x', expand=True)
+            ttk.Button(fila, text='Revertir', command=lambda i=eq[0]: self.eliminar_equipo(i)).pack(side='right')
+
     def mostrar_asignacion(self):
         self.frame.pack()
         self.label.pack(padx= 10, pady= 10)
@@ -62,6 +95,7 @@ class AsignacionEquipo:
         self.fecha_label.pack(anchor="w")
         self.fecha.pack(padx= 10, pady= 10)
         self.asignar.pack(padx= 10, pady= 10)
+        self.mostrar_lista_equipos()
         
     def ocultar(self):
         self.frame.pack_forget()

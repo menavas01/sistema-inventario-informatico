@@ -24,6 +24,22 @@ class CargarEquipo:
         self.tipoEquipo = ttk.Combobox(self.frame, state = "readonly", values = equipos, width = 47)
         self.tipoEquipo.set("Selecciona una opcion")
 
+        self.lista_e = obtener_todos_los_equipos()
+        self.lista_e.reverse()
+        self.frame_tabla = ttk.Frame(self.ventana)
+        self.tabla = ttk.Treeview(self.frame_tabla, columns=("Serie","Marca","Modelo", "Tipo"))
+        self.tabla.grid(row=4, column=0, columnspan=4, sticky="nse")
+
+        self.tabla.heading("#0", text="ID")
+        self.tabla.heading("#1", text="Tipo")
+        self.tabla.heading("#2", text="Marca")
+        self.tabla.heading("#3", text="Modelo")
+        self.tabla.heading("#4", text="Serie")
+
+        for e in self.lista_e:
+            self.tabla.insert('',0,text=e[0],
+                              values=(e[1],e[2],e[3],e[4]))
+
         self.cargar = ttk.Button(self.frame, text = "Cargar", command = self.cargar_equipos, width = 50)
 
     def cargar_equipos(self):
@@ -51,27 +67,6 @@ class CargarEquipo:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
-    def mostrar_lista_equipos(self):
-        # Crear frame con scroll
-        contenedor = ttk.Frame(self.frame)
-        contenedor.pack(padx=10, pady=10, fill='both', expand=True)
-        canvas = tk.Canvas(contenedor, height=150)
-        scrollbar = ttk.Scrollbar(contenedor, orient='vertical', command=canvas.yview)
-        frame_lista = ttk.Frame(canvas)
-        frame_lista.bind(
-            '<Configure>',
-            lambda e: canvas.configure(scrollregion=canvas.bbox('all'))
-        )
-        canvas.create_window((0, 0), window=frame_lista, anchor='nw')
-        canvas.configure(yscrollcommand=scrollbar.set)
-        canvas.pack(side='left', fill='both', expand=True)
-        scrollbar.pack(side='right', fill='y')
-        # Obtener y mostrar equipos
-        equipos = obtener_todos_los_equipos()
-        for eq in equipos:
-            info = f"{eq[1]} | Marca: {eq[2]} | Modelo: {eq[3]} | Serie: {eq[4]}"
-            ttk.Label(frame_lista, text=info, anchor='w').pack(fill='x', padx=5, pady=2)
-
     def mostrar_carga(self):
         self.frame.pack()
         self.label.pack(padx= 10, pady= 10)
@@ -84,7 +79,9 @@ class CargarEquipo:
         self.tipoEquipo_label.pack(anchor="w")
         self.tipoEquipo.pack(padx= 10, pady= 10)
         self.cargar.pack(padx= 10, pady= 10)
-        self.mostrar_lista_equipos()
+        self.frame_tabla.pack()
+        self.tabla.pack(padx= 10, pady= 20)
         
     def ocultar(self):
         self.frame.pack_forget()
+        self.frame_tabla.pack_forget()

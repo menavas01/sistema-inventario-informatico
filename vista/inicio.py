@@ -8,7 +8,7 @@ class App ():
         self.ventana = ventana
         self.ventana.title("Sistema de Inventario")  
         self.ventana.iconbitmap("assets/icon.ico")
-        self.ventana.geometry("600x600")
+        self.ventana.geometry("1100x700")
         #self.ventana.resizable(False, False)
         
         #Instancias de todas las pantallas

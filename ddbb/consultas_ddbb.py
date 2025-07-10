@@ -74,13 +74,35 @@ def obtener_todos_los_equipos():
     conn = sqlite3.connect('ddbb/equipos.db')
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT equipo.id_equipo, tipo_de_equipo.tipo, equipo.marca, equipo.modelo, equipo.serie
-        FROM equipo
-        JOIN tipo_de_equipo ON equipo.tipo_id = tipo_de_equipo.id_tipo
+    SELECT equipo.id_equipo, tipo_de_equipo.tipo, equipo.marca, equipo.modelo, equipo.serie
+    FROM equipo
+    JOIN tipo_de_equipo ON equipo.tipo_id = tipo_de_equipo.id_tipo
     ''')
     equipos = cursor.fetchall()
     conn.close()
     return equipos
+
+def obtener_todas_las_bajas():
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+    SELECT equipo_id, motivo_baja, fecha_baja, detalles_equipo
+    FROM bajas
+    ''')
+    bajas = cursor.fetchall()
+    conn.close()
+    return bajas
+
+def obtener_todas_las_asignaciones():
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+    SELECT equipo_id, usuario, motivo_asignacion, fecha_asignacion
+    FROM asignacion
+    ''')
+    bajas = cursor.fetchall()
+    conn.close()
+    return bajas
 
 
 

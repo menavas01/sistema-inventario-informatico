@@ -1,5 +1,6 @@
-from tkinter import ttk
-from ddbb.consultas_ddbb import obtener_tipos_equipo
+import tkinter as tk
+from tkinter import ttk, messagebox
+from ddbb.consultas_ddbb import obtener_tipos_equipo, cargar_equipo_ddbb
 
 class CargarEquipo:
     def __init__(self, ventana):
@@ -26,7 +27,29 @@ class CargarEquipo:
         self.cargar = ttk.Button(self.frame, text = "Cargar", command = self.cargar_equipos, width = 50)
 
     def cargar_equipos(self):
-        print ("Equipo cargado")
+        if self.tipoEquipo.get() == "Selecciona una opcion":
+            messagebox.showerror("Error", "Por favor, selecciona una opción válida")
+            return
+        if not all([self.marca.get(), self.modelo.get(), self.serie.get()]):
+            messagebox.showerror("Error", "Todos los campos deben estar completos")
+            return
+        
+        datos_equipo = [
+            self.marca.get(),
+            self.modelo.get(),
+            self.serie.get(),
+            self.tipoEquipo.get()
+        ]
+        
+        try:
+            cargar_equipo_ddbb(datos_equipo)
+            messagebox.showinfo("Éxito", f"Equipo cargado: {', '.join(datos_equipo)}")
+            self.marca.delete(0, tk.END)
+            self.modelo.delete(0, tk.END)
+            self.serie.delete(0, tk.END)
+            self.tipoEquipo.set("Selecciona una opción")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
     def mostrar_carga(self):
         self.frame.pack()

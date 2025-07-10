@@ -23,3 +23,53 @@ def obtener_equipo():
         equipos.append(row[0])
     conn.close()
     return equipos
+
+def cargar_equipo_ddbb(datos):
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT id_tipo, tipo FROM tipo_de_equipo")
+    
+    tipos_de_equipo = {row[0]: row[1] for row in cursor.fetchall()}
+    id_tipo = next(key for key, value in tipos_de_equipo.items() if value == datos[3])
+    
+    cursor.execute("INSERT INTO equipo (marca, modelo, serie, tipo_id) VALUES (?, ?, ?, ?)", (datos[0], datos[1], datos[2], id_tipo))
+    conn.commit()
+    conn.close()
+    
+def cargar_asignacion_ddbb(datos):
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    
+    serie = datos[0].split("|")[1].strip()
+    cursor.execute("SELECT id_equipo FROM equipo WHERE serie = ?", [serie])
+    id_equipo = cursor.fetchone()[0]
+    
+    cursor.execute("INSERT INTO asignacion (equipo_id, usuario, motivo_asignacion, fecha_asignacion) VALUES (?, ?, ?, ?)", (id_equipo, datos[1], datos[2], datos[3]))
+    conn.commit()
+    conn.close()
+    
+def cargar_baja_ddbb(datos):
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+    
+    serie = datos[0].split("|")[1].strip()
+    cursor.execute("SELECT id_equipo FROM equipo WHERE serie = ?", [serie])
+    id_equipo = cursor.fetchone()[0]
+    
+    cursor.execute("INSERT INTO bajas (equipo_id, motivo_baja, fecha_baja, detalles_equipo) VALUES (?, ?, ?, ?)", (id_equipo, datos[1], datos[2], datos[0]))
+    cursor.execute("DELETE FROM equipo WHERE id_equipo = ?", [id_equipo])
+    
+    
+    cursor.execute("SELECT id_asignacion FROM asignacion WHERE equipo_id = ?", [id_equipo])
+    asignacion = cursor.fetchall()
+    
+    if (asignacion != []):
+        cursor.execute("DELETE FROM asignacion WHERE equipo_id = ?", [id_equipo])
+    
+    
+    conn.commit()
+    conn.close()
+    
+    
+
+    

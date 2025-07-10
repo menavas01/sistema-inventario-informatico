@@ -1,6 +1,8 @@
-from tkinter import ttk
-from ddbb.consultas_ddbb import obtener_equipo
+import tkinter as tk
+from tkinter import ttk, messagebox
+from ddbb.consultas_ddbb import obtener_equipo, cargar_baja_ddbb
 from tkcalendar import DateEntry
+from datetime import datetime
 
 class BajaEquipo:
     def __init__(self, ventana):
@@ -23,7 +25,27 @@ class BajaEquipo:
         self.baja = ttk.Button(self.frame, text = "Dar de baja", command = self.baja_equipos, width = 50)
 
     def baja_equipos(self):
-        print ("Equipo bajado")
+        if self.tipoEquipo.get() == "Selecciona una opcion":
+            messagebox.showerror("Error", "Por favor, selecciona una opción válida")
+            return
+        if not all([self.motivo.get(), self.fecha.get()]):
+            messagebox.showerror("Error", "Todos los campos deben estar completos")
+            return
+        
+        datos_equipo = [
+            self.tipoEquipo.get(),
+            self.motivo.get(),
+            self.fecha.get(),
+        ]
+        
+        try:
+            cargar_baja_ddbb(datos_equipo)
+            messagebox.showinfo("Éxito", f"Equipo dado de baja: {', '.join(datos_equipo)}")
+            self.motivo.delete(0, tk.END)
+            self.fecha.set_date(datetime.now())
+            self.tipoEquipo.set("Selecciona una opción")
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
     def mostrar_baja(self):
         self.frame.pack()

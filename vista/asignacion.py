@@ -12,8 +12,8 @@ class AsignacionEquipo:
         self.label = ttk.Label (self.frame, text = "Asignar equipo", font = ("system-ui",11))
         
         self.tipoEquipo_label = ttk.Label(self.frame, text="Seleccione un equipo")
-        equipos = obtener_equipo()
-        self.tipoEquipo = ttk.Combobox(self.frame, state = "readonly", values = equipos, width = 47)
+        self.equipos = obtener_equipo()
+        self.tipoEquipo = ttk.Combobox(self.frame, state = "readonly", values = self.equipos, width = 47)
         self.tipoEquipo.set("Selecciona una opcion")
         
         self.usuario_label = ttk.Label(self.frame, text="Usuario asignado")
@@ -36,6 +36,11 @@ class AsignacionEquipo:
         for a in self.lista_a:
             self.tabla.insert('',0,text=a[0],
                               values=(a[1],a[2],a[3]))
+            
+        self.menu = tk.Menu(self.ventana, tearoff=0)
+        self.menu.add_command(label="Editar", command=self.editar)
+        self.menu.add_command(label="Eliminar", command=self.eliminar)
+        self.tabla.bind("<Button-3>", self.on_right_click)
 
         self.asignar = ttk.Button(self.frame, text = "Asignar", command = self.asignacion_equipos, width = 50)
 
@@ -61,6 +66,8 @@ class AsignacionEquipo:
             self.usuario.delete(0, tk.END)
             self.fecha.set_date(datetime.now())
             self.tipoEquipo.set("Selecciona una opción")
+            self.equipos = obtener_equipo()
+            self.actualizar_tabla()
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo guardar el equipo: {e}")
 
@@ -93,3 +100,27 @@ class AsignacionEquipo:
     def ocultar(self):
         self.frame.pack_forget()
         self.frame_tabla.pack_forget()
+        
+    def actualizar_tabla(self):
+        for item in self.tabla.get_children():
+            self.tabla.delete(item)
+
+        self.lista_a = obtener_todas_las_asignaciones()
+        self.lista_a.reverse()
+
+        for a in self.lista_a:
+            self.tabla.insert('',0,text=a[0],
+                              values=(a[1],a[2],a[3]))
+            
+    def on_right_click(self, event):
+        self.item_id = self.tabla.identify_row(event.y)
+        self.id_equipo = self.tabla.item(self.item_id, "text")
+        if self.item_id:
+            self.tabla.selection_set(self.item_id)
+            self.menu.post(event.x_root, event.y_root)
+            
+    def editar(self):
+        pass
+    
+    def eliminar(self):
+        pass

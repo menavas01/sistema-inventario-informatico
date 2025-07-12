@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from ddbb.consultas_ddbb import obtener_equipo, cargar_asignacion_ddbb, obtener_todas_las_asignaciones
+from ddbb.consultas_ddbb import obtener_equipo, cargar_asignacion_ddbb, obtener_todas_las_asignaciones, eliminar_asignacion, editar_asignacion_ddbb
 from tkcalendar import DateEntry
 from datetime import datetime
 
@@ -118,9 +118,59 @@ class AsignacionEquipo:
         if self.item_id:
             self.tabla.selection_set(self.item_id)
             self.menu.post(event.x_root, event.y_root)
-            
-    def editar(self):
-        pass
     
     def eliminar(self):
-        pass
+        eliminar_asignacion(self.id_equipo)
+        self.actualizar_tabla()
+        
+    def editar(self):
+        self.edicion = tk.Toplevel(self.ventana)
+        
+        self.edicion.title("Sistema de Inventario")  
+        self.edicion.iconbitmap("assets/icon.ico")
+        self.edicion.geometry("400x500")
+        
+        frame_edicion = ttk.Frame(self.edicion)
+        frame_edicion.pack(padx=10, pady=10, fill="both", expand=True)
+
+        label = ttk.Label(frame_edicion, text="Editar asignacion", font=("system-ui", 11))
+        label.pack(pady=10)
+
+        usuario_label = ttk.Label(frame_edicion, text="Usuario asignado")
+        usuario_label.pack(anchor="w")
+        usuario_entry = ttk.Entry(frame_edicion, width=50)
+        usuario_entry.insert(0, self.tabla.item(self.item_id)["values"][0])
+        usuario_entry.pack(pady=(0, 10))
+
+        motivo_label = ttk.Label(frame_edicion, text="Motivo de asignacion")
+        motivo_label.pack(anchor="w")
+        motivo_entry = ttk.Entry(frame_edicion, width=50)
+        motivo_entry.insert(0, self.tabla.item(self.item_id)["values"][1])
+        motivo_entry.pack(pady=(0, 10))
+
+        fecha_label = ttk.Label(frame_edicion, text="Fecha de asignacion")
+        fecha_label.pack(anchor="w")
+        fecha_dateentry = DateEntry(frame_edicion, date_pattern = "dd/mm/yyyy", width = 47)
+        fecha_asignacion = datetime.strptime(self.tabla.item(self.item_id)["values"][2], "%d/%m/%Y").date()
+        fecha_dateentry.set_date(fecha_asignacion)
+        fecha_dateentry.pack(pady=(0, 10))
+        
+        def confirmar_edicion():
+            id_equipo = str(self.tabla.item(self.item_id, "text"))
+            datos_equipo = [
+                id_equipo,
+                usuario_entry.get(),
+                motivo_entry.get(),
+                fecha_dateentry.get()
+            ] 
+            
+            try:
+                editar_asignacion_ddbb(datos_equipo)
+                messagebox.showinfo("Éxito", f"Equipo editado: {', '.join(datos_equipo)}")
+                self.edicion.destroy()
+                self.actualizar_tabla()
+            except Exception as e:
+                messagebox.showerror("Error", f"No se pudo editar el equipo: {e}")
+        guardar = ttk.Button(frame_edicion, text = "Guardar", command = confirmar_edicion, width = 50)
+        guardar.pack(padx= 10, pady= 10)
+        

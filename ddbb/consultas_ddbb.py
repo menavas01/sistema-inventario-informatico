@@ -112,18 +112,17 @@ def eliminar_equipo(id_equipo):
     conn.commit()
     conn.close()
     
-def revertir_asignacion(id_equipo):
+def eliminar_asignacion(id_asignacion):
     conn = sqlite3.connect('ddbb/equipos.db')
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM asignacion WHERE equipo_id = ?", [id_equipo])
+    cursor.execute("DELETE FROM asignacion WHERE equipo_id = ?", [id_asignacion])
     conn.commit()
     conn.close()
     
-def revertir_baja(id_equipo):
+def eliminar_baja(id_baja):
     conn = sqlite3.connect('ddbb/equipos.db')
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM equipo WHERE id_equipo = ?", [id_equipo])
-    print("Equipo eliminado")
+    cursor.execute("DELETE FROM bajas WHERE equipo_id = ?", [id_baja])
     conn.commit()
     conn.close()
 
@@ -140,4 +139,23 @@ def editar_equipo_ddbb(datos):
     
     conn.commit()
     conn.close()
+    
+def editar_bajas_ddbb(datos):
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE bajas SET motivo_baja = ?, fecha_baja = ? WHERE equipo_id = ?", (datos[1], datos[2], datos[0]))
+    
+    conn.commit()
+    conn.close()
+    
+def editar_asignacion_ddbb(datos):
+    conn = sqlite3.connect('ddbb/equipos.db')
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE asignacion SET usuario = ?, motivo_asignacion = ?, fecha_asignacion = ? WHERE equipo_id = ?", (datos[1], datos[2], datos[3], datos[0]))
+    
+    conn.commit()
+    conn.close()
+
 

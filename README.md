@@ -26,10 +26,10 @@ Cada pestaña corresponde a una función diferente del programa y permite:
 
 ## 🖼️ **Capturas de pantalla (opcional)**
 
-<img src="assets\MENU_INICIO.png" alt="Menu Inicio" width="400"/>
-<img src="assets\PREVISUALIZACION_BD.png" alt="Previsualuzación Tablas" width="400"/>
-<img src="assets\MENU_CONTEXTUAL.png" alt="Menu contextual" width="400"/>
-<img src="assets\EDITAR_EQUIPO.png" alt="Editar registro" width="400"/>
+<img src="assets\MENU_INICIO.png" alt="Menu Inicio" width="800"/>
+<img src="assets\PREVISUALIZACION_BD.png" alt="Previsualuzación Tablas" width="800"/>
+<img src="assets\MENU_CONTEXTUAL.png" alt="Menu contextual" width="800"/>
+<img src="assets\EDITAR_EQUIPO.png" alt="Editar registro" width="800"/>
 
 ---
 

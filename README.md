@@ -24,7 +24,7 @@ Cada pestaña corresponde a una función diferente del programa y permite:
 
 ---
 
-## 🖼️ **Capturas de pantalla (opcional)**
+## 🖼️ **Capturas de pantalla**
 
 <img src="assets\MENU_INICIO.png" alt="Menu Inicio" width="800"/>
 <img src="assets\PREVISUALIZACION_BD.png" alt="Previsualuzación Tablas" width="800"/>
